@@ -14,9 +14,25 @@ module tt_um_example (
     input  wire       ena,      // always 1 when the design is powered, so you can ignore it
     input  wire       clk,      // clock
     input  wire       rst_n     // reset_n - low to reset
-);
+    
+    input [9:0] addr;
+    input we = 0;
+    reg [7:0] mem[0:9];
 
+);
+    always @(posedge clk) begin
+        if ((we) & (addr = 10))
+            addr = 0;
+        else (
+            if (addr <= 1)
+            mem[addr] <= uio_in;      // write memory from uio_in
+            uio_out <= mem[addr];     // read memory from uio_out
+            addr = addr + 1;
+        ) 
+    end 
+    
   // All output pins must be assigned. If not used, assign to 0.
+
   assign uo_out  = ui_in + uio_in;  // Example: ou_out is the sum of ui_in and uio_in
   assign uio_out = 0;
   assign uio_oe  = 0;
